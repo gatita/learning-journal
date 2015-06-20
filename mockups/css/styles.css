@@ -1,0 +1,66 @@
+
+/* Heading -------------------- */
+
+header {
+    float: left;
+    position: fixed;
+    width: 45%;
+    height: 100%;
+    background-color: rgba(37, 33, 40, .8);
+    border-right: 1px solid rgba(158, 197, 226, .4);
+    text-align: center;
+}
+
+nav {
+    margin-top: 42%;
+    color: white;
+}
+
+nav h1,
+nav h2 {
+    text-shadow: 2px 3px 2px rgba(0,0,0,0.3);
+}
+
+nav h2 {
+    max-width: 375px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+#create {
+    letter-spacing: .25;
+    color: rgb(217, 142, 4);
+    display: inline-block;
+    margin-top: 2%;
+}
+
+
+/* Float Clearfix -------------------- */
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+/* Media Queries -------------------- */
+
+@media (max-width: 480px) {
+    header {
+        position: relative;
+        width: 100%;
+        border: 2px solid lightblue;
+    }
+}
+
+@media (min-width: 481px) {
+    header {
+        border: 2px solid tomato;
+    }
+}
