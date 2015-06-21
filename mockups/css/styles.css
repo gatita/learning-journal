@@ -43,7 +43,7 @@ nav a {
     color: white;
 }
 
-#create {
+#create-edit {
     letter-spacing: .25;
     color: rgb(217, 142, 4);
     display: inline-block;
@@ -57,7 +57,7 @@ nav a {
 #entries {
     float: right;
     width: 45%;
-    margin: 5% 5%;
+    margin: 5% 5% 1%;
 }
 
 .post-listing {
@@ -75,6 +75,20 @@ nav a {
 
 .post-listing a {
     color: #D98E04;
+}
+
+
+
+/* Footer -------------------- */
+
+footer {
+    font-size: .7em;
+    text-align: center;
+    margin-top: 20%;
+}
+
+#footer-form {
+    display: inline-block;
 }
 
 
@@ -108,16 +122,25 @@ label h3 {
     max-width: 301px;
 }
 
-#new-entry {
+#reduced-header nav {
+    margin-top: 55%;
+}
+
+#entry-form {
     float: right;
     width: 55%;
     margin: 3% 5%;
 }
 
-#new-entry h2 {
+#entry-form h2 {
     color: #D98E04;
     margin-bottom: 7%;
     text-transform: uppercase;
+}
+
+#entry-form h3,
+#entry-form h4 {
+    margin: 0 0 2%;
 }
 
 form {
@@ -153,11 +176,6 @@ textarea:focus {
     margin-top: 5%;
     border-radius: 2px;
     padding: 1% 2%;
-}
-
-#new-entry h3,
-#new-entry h4 {
-    margin: 0 0 2%;
 }
 
 textarea {
@@ -212,7 +230,7 @@ textarea {
         width: 100%;
     }
 
-    #new-entry {
+    #entry-form {
         width: 90%;
     }
 }
