@@ -77,6 +77,8 @@ nav a {
     color: #D98E04;
 }
 
+
+
 /* PAGE: Detail -------------------- */
 
 #date {
@@ -85,6 +87,82 @@ nav a {
 
 #entry-title {
     margin-bottom: 35px;
+}
+
+label h4,
+label h3 {
+    color: #222320
+}
+
+
+
+/* PAGE: Create & Edit -------------------- */
+
+
+#reduced-header {
+    width: 35%;
+    font-size: .8em;
+}
+
+#reduced-header h2 {
+    max-width: 301px;
+}
+
+#new-entry {
+    float: right;
+    width: 55%;
+    margin: 3% 5%;
+}
+
+#new-entry h2 {
+    color: #D98E04;
+    margin-bottom: 7%;
+    text-transform: uppercase;
+}
+
+form {
+    min-width: 90%;
+}
+
+form label {
+    display: block;
+}
+
+#body-label {
+    margin-top: 8%;
+}
+
+#title-label {
+    width: 300px;
+}
+
+input,
+textarea {
+    border: 1px solid #ccc;
+    padding: 4px 7px;
+    border-radius: 5px;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #96775B;
+}
+
+#submit-button {
+    float: right;
+    margin-top: 5%;
+    border-radius: 2px;
+    padding: 1% 2%;
+}
+
+#new-entry h3,
+#new-entry h4 {
+    margin: 0 0 2%;
+}
+
+textarea {
+    width: 97%;
+    float: left;
 }
 
 
@@ -96,6 +174,7 @@ nav a {
   display: table;
   clear: both;
 }
+
 
 
 /* Media Queries -------------------- */
@@ -125,6 +204,15 @@ nav a {
     }
 
     #entries {
+        width: 90%;
+    }
+
+    #reduced-header {
+        position: relative;
+        width: 100%;
+    }
+
+    #new-entry {
         width: 90%;
     }
 }
