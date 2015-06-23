@@ -8,6 +8,12 @@ from pyramid.config import Configurator
 from pyramid.view import view_config
 from waitress import serve
 
+
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://gracehatamyar@localhost:5432/learning-journal'
+)
+
 Base = declarative_base()
 
 
@@ -19,6 +25,11 @@ class Entry(Base):
     created = sa.Column(
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
         )
+
+
+def init_db():
+    engine = sa.create_engine(DATABASE_URL, echo=True)
+    Base.metadata.create_all(engine)
 
 
 @view_config(route_name='home', renderer='string')
