@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>What a Great Demo</title>
+    </head>
+    <body>
+{%block foobar%}
+<a href="{{ request.route_url('other', special_val=42) }}">click me</a>
+{% end block %}
+    </body>
+
+</html>

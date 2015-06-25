@@ -7,6 +7,7 @@ import os
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from waitress import serve
+from pyramid.httpexceptions import HTTPNotFound
 
 
 DATABASE_URL = os.environ.get(
@@ -32,9 +33,15 @@ def init_db():
     Base.metadata.create_all(engine)
 
 
-@view_config(route_name='home', renderer='string')
+@view_config(route_name='home', renderer='templates/test.jinja2')
 def home(request):
-    return "Hello World"
+    return {'one': 'two'}
+
+
+@view_config(route_name='other', renderer='string')
+def other(request):
+    import pdb; pdb.set_trace()
+    return request.matchdict
 
 
 def main():
@@ -47,7 +54,10 @@ def main():
     config = Configurator(
         settings=settings
     )
+    # config.include('pyramid_tm')
+    config.include('pyramid_jinja2')
     config.add_route('home', '/')
+    config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()
     return app
