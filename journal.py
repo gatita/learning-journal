@@ -78,7 +78,7 @@ def main():
         settings=settings
     )
     config.include('pyramid_tm')
-    # config.include('pyramid_jinja2')
+    config.include('pyramid_jinja2')
     config.add_route('home', '/')
     # config.add_route('other', '/other/{special_val}')
     config.scan()
