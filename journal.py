@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import datetime
+import os
+
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-import os
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.exc import DBAPIError
+
 from pyramid.config import Configurator
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
+
 from waitress import serve
-from sqlalchemy.orm import scoped_session, sessionmaker
+
 from zope.sqlalchemy import ZopeTransactionExtension
-# from pyramid.httpexceptions import HTTPNotFound
+
+from cryptacular.bcrypt import BCRYPTPasswordManager
+
 
 DBSession = scoped_session(sessionmaker(
     extension=ZopeTransactionExtension()))
@@ -52,10 +62,39 @@ def init_db():
     Base.metadata.create_all(engine)
 
 
+def do_login(request):
+    username = request.params.get('username', None)
+    password = request.params.get('password', None)
+    if not (username and password):
+        raise ValueError('both username and password are required')
+
+    settings = request.registry.settings
+    manager = BCRYPTPasswordManager()
+    if username == settings.get('auth.username', ''):
+        hashed = settings.get('auth.password', '')
+        return manager.check(hashed, password)
+
+
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
     return {'entries': entries}
+
+
+@view_config(route_name='add', request_method='POST')
+def add_entry(request):
+    title = request.params.get('title')
+    text = request.params.get('text')
+    Entry.write(title=title, text=text)
+    return HTTPFound(request.route_url('home'))
+
+
+@view_config(context=DBAPIError)
+def db_exception(context, request):
+    from pyramid.response import Response
+    response = Response(context.message)
+    response.status_int = 500
+    return response
 
 
 # @view_config(route_name='other', renderer='string')
@@ -70,17 +109,30 @@ def main():
     debug = os.environ.get('DEBUG', True)
     settings['reload_all'] = debug
     settings['debug_all'] = debug
+    settings['auth.username'] = os.environ.get('AUTH_USERNAME', 'admin')
+    manager = BCRYPTPasswordManager()
+    settings['auth.password'] = os.environ.get(
+        'AUTH_PASSWORD', manager.encode('secret')
+    )
     if not os.environ.get('TESTING', False):
         # only bind the session if we are not testing
         engine = sa.create_engine(DATABASE_URL)
         DBSession.configure(bind=engine)
+    # add a secret value for auth rkt signing
+    auth_secret = os.environ.get('JOURNAL_AUTH_SECRET', 'itsaseekrit')
     # configuration setup
     config = Configurator(
-        settings=settings
+        settings=settings,
+        authentication_policy=AuthTktAuthenticationPolicy(
+            secret=auth_secret,
+            hashalg='sha512'
+            ),
+        authorization_policy=ACLAuthorizationPolicy(),
     )
     config.include('pyramid_tm')
     config.include('pyramid_jinja2')
     config.add_route('home', '/')
+    config.add_route('add', '/add')
     # config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()

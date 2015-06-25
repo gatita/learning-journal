@@ -4,6 +4,8 @@ import os
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
+from pyramid import testing
+from cryptacular.bcrypt import BCRYPTPasswordManager
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -14,13 +16,19 @@ os.environ['TESTING'] = "True"
 
 import journal
 
+# last two fixtures are used with webtest tests
+
 
 @pytest.fixture(scope='session')
 def connection(request):
     engine = create_engine(TEST_DATABASE_URL)
     journal.Base.metadata.create_all(engine)
+    # create connection to our database
+    # this opens a transaction that last for the scope
+    # of the entire session
     connection = engine.connect()
     journal.DBSession.registry.clear()
+    # bind this in the name space  of journal
     journal.DBSession.configure(bind=connection)
     journal.Base.metadata.bind = engine
     request.addfinalizer(journal.Base.metadata.drop_all)
@@ -29,8 +37,11 @@ def connection(request):
 
 @pytest.fixture()
 def db_session(request, connection):
+    # starts a new transaction inside the already open transaction
     from transaction import abort
     trans = connection.begin()
+    # every test has a transaction that's open for the duration
+    # of the test, and rollsback when the test is completed
     request.addfinalizer(trans.rollback)
     request.addfinalizer(abort)
 
@@ -39,7 +50,7 @@ def db_session(request, connection):
 
 
 @pytest.fixture()
-def app():
+def app(db_session):
     from journal import main
     from webtest import TestApp
     app = main()
@@ -54,6 +65,24 @@ def entry(db_session):
         session=db_session)
     db_session.flush()
     return entry
+
+
+@pytest.fixture(scope='function')
+def auth_req(request):
+    manager = BCRYPTPasswordManager()
+    settings = {
+        'auth.username': 'admin',
+        'auth.password': manager.encode('secret'),
+    }
+    testing.setUp(settings=settings)
+    req = testing.DummyRequest()
+
+    def cleanup():
+        testing.tearDown()
+
+    request.addfinalizer(cleanup)
+
+    return req
 
 
 def test_write_entry(db_session):
@@ -140,3 +169,59 @@ def test_listing(app, entry):
     for field in ['title', 'text']:
         expected = getattr(entry, field, 'absent')
         assert expected in actual
+
+
+def test_post_to_add_view(app):
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is post',
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    redirected = response.follow()
+    actual = redirected.body
+    for expected in entry_data.values():
+        assert expected in actual
+
+
+def test_add_no_params(app):
+    response = app.post('/add', status=500)
+    assert 'IntegrityError' in response.body
+
+
+def test_do_login_success(auth_req):
+    from journal import do_login
+    auth_req.params = {'username': 'admin', 'password': 'secret'}
+    assert do_login(auth_req)
+
+
+def test_do_login_bad_pass(auth_req):
+    from journal import do_login
+    auth_req.params = {'username': 'admin', 'password': 'wrong'}
+    assert not do_login(auth_req)
+
+
+def test_do_login_bad_user(auth_req):
+    from journal import do_login
+    auth_req.params = {'username': 'bad', 'password': 'secret'}
+    assert not do_login(auth_req)
+
+
+def test_do_login_missing_params(auth_req):
+    from journal import do_login
+    for params in ({'username': 'admin'}, {'password': 'secret'}):
+        auth_req.params = params
+        with pytest.raises(ValueError):
+            do_login(auth_req)
+
+
+
+
+
+
+
+
+
+
+
+
+
