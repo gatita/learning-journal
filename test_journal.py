@@ -84,4 +84,25 @@ def test_entry_no_text_fails(db_session):
         db_session.flush()
 
 
-  
+def test_read_entries_empty(db_session):
+    entries = journal.Entry.all()
+    assert len(entries) == 0
+
+
+def test_read_entries_one(db_session):
+    title_template = "Title {}"
+    text_template = "Entry Text {}"
+
+    # write three entries, with order clear in the title and text
+    for x in range(3):
+        journal.Entry.write(
+            title=title_template.format(x),
+            text=text_template.format(x),
+            session=db_session)
+        db_session.flush()
+    entries = journal.Entry.all()
+    assert len(entries) == 3
+    assert entries[0].title > entries[1].title > entries[2].title
+    for entry in entries:
+        assert isinstance(entry, journal.Entry)
+        
