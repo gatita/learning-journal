@@ -6,9 +6,19 @@
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
   <body>
     <header>
+      <aside id="user-controls">
+        <ul>
+          {% if not request.authenticated_userid %}
+          <li><a href="{{ request.route_url('login') }}">log in</a></li>
+          {% else %}
+          <li><a href="{{ request.route_url('logout') }}">log out</a></li>
+          {% endif %}
+        </ul>
+      </aside>
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
