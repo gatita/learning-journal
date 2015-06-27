@@ -9,15 +9,15 @@
         <h2>New Entry</h2>
         <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
             <div class="field">
-                <label for="title">Title</label>
-                <input type="text" size="30" name="title" id="title"/>
+                <label for="title"><h4>Title</h4></label>
+                <input type="text" name="title" id="title-label"/>
             </div>
             <div class="field">
-                <label for="text">Text</label>
-                <textarea name="text" id="text" rows="5" cols="80"></textarea>
+                <label id="body-label" for="post-text"><h3>Body</h3></label>
+                <textarea name="text" id="text" rows="17"></textarea>
             </div>
             <div class="control_row">
-                <input type="submit" value="Share" name="Share"/>
+                <input id="submit-button" type="submit" value="Share" name="submit"/>
             </div>
         </form>
 
