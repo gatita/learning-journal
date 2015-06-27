@@ -1,0 +1,248 @@
+/* General -------------------- */
+
+a {
+    text-decoration: none;
+}
+
+
+
+/* Heading -------------------- */
+
+header {
+    float: left;
+    position: fixed;
+    width: 45%;
+    height: 100%;
+    background-color: rgba(37, 33, 40, .8);
+    border-right: 1px solid rgba(158, 197, 226, .4);
+    text-align: center;
+}
+
+nav {
+    margin-top: 35%;
+    color: white;
+}
+
+nav h1,
+nav h2 {
+    text-shadow: 2px 3px 2px rgba(0,0,0,0.3);
+}
+
+nav h1 {
+    margin: 4% 2.5% 0;
+    display: block;
+}
+
+nav h2 {
+    max-width: 375px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+nav a {
+    color: white;
+}
+
+.create-edit {
+    letter-spacing: .25;
+    color: rgb(217, 142, 4);
+    display: block;
+    margin-top: 5%;
+}
+
+#login {
+    letter-spacing: .25;
+    color: rgb(217, 142, 4);
+    display: inline-block;
+    margin-top: 5%;
+}
+
+
+
+/* Entry List -------------------- */
+/*changed from entries*/
+#entries {
+    float: right;
+    width: 45%;
+    margin: 5% 5% 1%;
+}
+
+.post-listing {
+    text-transform: uppercase;
+    margin-bottom: 8%;
+}
+
+.post-listing h2 {
+    color: #222320;
+}
+
+.post-listing p {
+    color: #96775B;
+}
+
+.post-listing a {
+    color: #D98E04;
+}
+
+
+
+/* Footer -------------------- */
+
+footer {
+    font-size: .7em;
+    text-align: center;
+    margin-top: 20%;
+ 
+}
+
+#footer-form {
+    display: inline-block;
+}
+
+
+
+/* PAGE: Detail -------------------- */
+
+#date {
+    color: #96775B;
+}
+
+#entry-title {
+    margin-bottom: 35px;
+}
+
+label h4,
+label h3 {
+    color: #222320
+}
+
+
+
+/* PAGE: Create & Edit -------------------- */
+
+
+#reduced-header {
+    width: 35%;
+    font-size: .8em;
+}
+
+#reduced-header h2 {
+    max-width: 301px;
+}
+
+#reduced-header nav {
+    margin-top: 55%;
+}
+
+#reduced-header #create-edit {
+    font-size: 1.2em;
+}
+
+#entry-form {
+    float: right;
+    width: 55%;
+    margin: 3% 5%;
+}
+
+#entry-form h2 {
+    color: #D98E04;
+    margin-bottom: 7%;
+    text-transform: uppercase;
+}
+
+#entry-form h3,
+#entry-form h4 {
+    margin: 0 0 2%;
+}
+
+form {
+    min-width: 90%;
+}
+
+form label {
+    display: block;
+}
+
+#body-label {
+    margin-top: 8%;
+}
+
+#title-label {
+    width: 300px;
+}
+
+input,
+textarea {
+    border: 1px solid #ccc;
+    padding: 4px 7px;
+    border-radius: 5px;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #96775B;
+}
+
+#submit-button {
+    float: right;
+    margin-top: 5%;
+    border-radius: 2px;
+    padding: 1% 2%;
+}
+
+textarea {
+    width: 97%;
+    float: left;
+}
+
+
+
+/* Float Clearfix -------------------- */
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+
+/* Media Queries -------------------- */
+
+@media (max-width: 480px) {
+    header {
+        position: relative;
+        width: 100%;
+    }
+
+    .group {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        font-size: .9em;
+    }
+
+    nav {
+        margin-top: 5%;
+    }
+
+    nav h2 {
+        max-width: 335px;
+    }
+
+    img {
+        max-width: 120px
+    }
+
+    #entries {
+        width: 90%;
+    }
+
+    #reduced-header {
+        position: relative;
+        width: 100%;
+    }
+
+    #entry-form {
+        width: 90%;
+    }
+}
