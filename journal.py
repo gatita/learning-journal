@@ -27,8 +27,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 DBSession = scoped_session(sessionmaker(
     extension=ZopeTransactionExtension()))
-
-
 DATABASE_URL = os.environ.get(
     'DATABASE_URL',
     'postgresql://gracehatamyar@localhost:5432/learning-journal'
@@ -59,6 +57,13 @@ class Entry(Base):
         if session is None:
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
+
+    # new method to query Entry for a particular entry
+    @classmethod
+    def by_id(cls, pk, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).get(pk)
 
 
 def init_db():
@@ -126,6 +131,19 @@ def logout(request):
     headers = forget(request)
     return HTTPFound(request.route_url('home'), headers=headers)
 
+
+@view_config(route_name='create', renderer='templates/create.jinja2')
+def create(request):
+    return {}
+
+
+@view_config(route_name='entry', renderer='templates/entry.jinja2')
+def entry(request):
+    pk = request.matchdict['id']
+    entry = Entry.by_id(pk)
+    return {'entry': entry}
+
+
 # @view_config(route_name='other', renderer='string')
 # def other(request):
 #     # import pdb; pdb.set_trace()
@@ -165,6 +183,8 @@ def main():
     config.add_route('add', '/add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('create', '/create')
+    config.add_route('entry', '/entry/{id}')
     # config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()
