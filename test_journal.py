@@ -257,7 +257,7 @@ def test_logout(app):
     response = redirect.follow()
     assert response.status_code == 200
     actual = response.body
-    assert INPUT_BTN not in actual
+    assert "Add new entry" not in actual
 
 
 
