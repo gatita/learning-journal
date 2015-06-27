@@ -247,7 +247,7 @@ def test_login_fails(app):
     assert response.status_code == 200
     actual = response.body
     assert "Login Failed" in actual
-    assert INPUT_BTN not in actual
+    assert "Add new entry" not in actual
 
 
 def test_logout(app):
