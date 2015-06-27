@@ -238,8 +238,7 @@ def test_login_success(app):
     assert redirect.status_code == 302
     response = redirect.follow()
     assert response.status_code == 200
-    actual = response.body
-    assert INPUT_BTN in actual
+    assert "Add new entry" in response.body
 
 
 def test_login_fails(app):
