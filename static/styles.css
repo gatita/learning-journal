@@ -4,6 +4,18 @@ a {
     text-decoration: none;
 }
 
+/*new*/
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#container {
+    min-height: 100%;
+    position: relative;
+}
 
 
 /* Heading -------------------- */
@@ -16,6 +28,8 @@ header {
     background-color: rgba(37, 33, 40, .8);
     border-right: 1px solid rgba(158, 197, 226, .4);
     text-align: center;
+    /*new*/
+    padding: 10px;
 }
 
 nav {
@@ -91,7 +105,12 @@ nav a {
 footer {
     font-size: .7em;
     text-align: center;
-    margin-top: 20%;
+/*    margin-top: 20%;*/
+    /*new*/
+    position: absolute;
+    bottom: 0;
+    width: 45%;
+    height: 60px;
  
 }
 
@@ -99,6 +118,13 @@ footer {
     display: inline-block;
 }
 
+/* PAGE: Login -------------------- */
+
+#login-header {
+    color: #D98E04;
+    margin-bottom: 7%;
+    text-transform: uppercase;
+}
 
 
 /* PAGE: Detail -------------------- */

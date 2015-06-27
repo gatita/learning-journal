@@ -1,7 +1,12 @@
 {% extends "base.jinja2" %}
+
+{% block header %}
+<header>
+{% endblock %}
+
 {% block body %}
-    <section id="entries">
-    <h2>Login</h2>
+<section id="entries">
+    <h2 id="login-header">Login</h2>
     {% if error -%}
     <p class="error"><strong>Error</strong>strong>: {{ error }}</p>
     {%- endif  %}
