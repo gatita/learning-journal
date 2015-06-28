@@ -178,8 +178,7 @@ def test_post_to_add_view(app):
     response = app.post('/add', params=entry_data, status='3*')
     redirected = response.follow()
     actual = redirected.body
-    for expected in entry_data.values():
-        assert expected in actual
+    assert entry_data['title'] in actual
 
 
 def test_add_no_params(app):
