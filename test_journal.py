@@ -179,6 +179,7 @@ def test_post_to_add_view(app):
     redirected = response.follow()
     actual = redirected.body
     assert entry_data['title'] in actual
+    assert entry_data['text'] not in actual
 
 
 def test_add_no_params(app):
@@ -246,6 +247,14 @@ def test_login_fails(app):
     actual = response.body
     assert "Login Failed" in actual
     assert "Add new entry" not in actual
+
+
+def test_login_renderer(app):
+    response = app.get('/', status=200)
+    redirect = response.click(linkid='login')
+    form = redirect.form
+    for field in ['username', 'password']:
+        assert field in form.fields
 
 
 def test_logout(app):
