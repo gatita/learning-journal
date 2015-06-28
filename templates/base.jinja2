@@ -23,7 +23,8 @@
             <a href="{{ request.route_url('login') }}" id="login">Log in</a>
             {% else %}
             <!-- change url here to create once view is finished -->
-            <a href="{{ request.route_url('create') }}" class="create-edit" >Add new entry</a>
+            <a href="{{ request.route_url('create') }}" class="create-edit" id="add-new">
+            Add new entry</a>
             <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
             {% endif %}
           </aside>
