@@ -166,9 +166,8 @@ def test_listing(app, entry):
     response = app.get('/')
     assert response.status_code == 200
     actual = response.body
-    for field in ['title', 'text']:
-        expected = getattr(entry, field, 'absent')
-        assert expected in actual
+    expected = getattr(entry, 'title', 'absent')
+    assert expected in actual
 
 
 def test_post_to_add_view(app):
@@ -259,6 +258,17 @@ def test_logout(app):
     actual = response.body
     assert "Add new entry" not in actual
 
+
+# def test_listing(app, entry):
+#     test_login_success(app)
+#     # redirect = app.get('/', status="3*")
+#     response = app.get('/')
+#     assert response.status_code == 200
+#     assert "Add new Entry" in response.body
+#     # actual = response.body
+#     # for field in ['title', 'text']:
+#     #     expected = getattr(entry, field, 'absent')
+#     #     assert expected in actual
 
 
 
