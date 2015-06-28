@@ -213,7 +213,7 @@ def test_do_login_missing_params(auth_req):
             do_login(auth_req)
 
 
-INPUT_BTN = '<input type="submit" value="Share" name="Share"/>'
+INPUT_BTN = '<input id="submit-button" type="submit" value="Share" name="submit"/>'
 
 
 def login_helper(username, password, app):
@@ -267,16 +267,38 @@ def test_logout(app):
     assert "Add new entry" not in actual
 
 
-# def test_listing(app, entry):
-#     test_login_success(app)
-#     # redirect = app.get('/', status="3*")
-#     response = app.get('/')
-#     assert response.status_code == 200
-#     assert "Add new Entry" in response.body
-#     # actual = response.body
-#     # for field in ['title', 'text']:
-#     #     expected = getattr(entry, field, 'absent')
-#     #     assert expected in actual
+def test_login_returned_by_anonymous_create_request(app):
+    response = app.get('/create', status=200)
+    # check that new entry form not in response
+    assert "entry-form" not in response
+    # check that login form is in response
+    assert "login-header" in response
+    form = response.form
+    for field in ['username', 'password']:
+        assert field in form.fields
+
+
+def test_add_returned_after_authenticated_create_request(app):
+    username, password = ('admin', 'secret')
+    redirect = login_helper(username, password, app)
+    assert redirect.status_code == 302
+    response = app.get('/create', status=200)
+    assert INPUT_BTN in response
+
+
+def test_add_new_entry_btn_after_login(app):
+    username, password = ('admin', 'secret')
+    redirect = login_helper(username, password, app)
+    assert redirect.status_code == 302
+    response = redirect.follow()
+    redirect = response.click(linkid='add-new')
+    assert INPUT_BTN in redirect
+
+
+    
+
+
+
 
 
 
