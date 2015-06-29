@@ -16,8 +16,6 @@ os.environ['TESTING'] = "True"
 
 import journal
 
-# last two fixtures are used with webtest tests
-
 
 @pytest.fixture(scope='session')
 def connection(request):
@@ -213,7 +211,8 @@ def test_do_login_missing_params(auth_req):
             do_login(auth_req)
 
 
-INPUT_BTN = '<input id="submit-button" type="submit" value="Share" name="submit"/>'
+INPUT_BTN = '<input id="submit-button" type="submit" \
+            value="Share" name="submit"/>'
 
 
 def login_helper(username, password, app):
@@ -295,20 +294,9 @@ def test_add_new_entry_btn_after_login(app):
     assert INPUT_BTN in redirect
 
 
-    
+# add test to test by_id control
+def test_by_id(app):
+    pass
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# add tests to test entry view
