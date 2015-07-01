@@ -5,6 +5,16 @@
     <!-- {% block userControls %}
     <a href="{{ request.route_url('create') }}" class="create-edit" >Add new entry</a>
     {% endblock %} -->
+
+{% block controls %}
+    {% if not request.authenticated_userid %}
+        <a href="{{ request.route_url('login') }}" id="login">Log in</a>
+    {% else %}
+        <a href="{{ request.route_url('create') }}" class="create-edit" id="add-new">Add new entry</a>
+        <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
+    {% endif %}  
+{% endblock %}
+    
 {% block body %}
     <section id="entries">
         {% for entry in entries %}

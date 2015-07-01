@@ -1,6 +1,4 @@
 {% extends "base.jinja2" %}
-<!-- {% if request.authenticated_userid %} -->
-
 
 {% block header %}
     {% if request.authenticated_userid %}
@@ -8,6 +6,14 @@
     {% else %}
         <header>
     {% endif %}
+{% endblock %}
+
+{% block controls %}
+    {% if not request.authenticated_userid %}
+        <a href="{{ request.route_url('login') }}" id="login">Log in</a>
+    {% else %}
+        <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
+    {% endif %}  
 {% endblock %}
 
 
@@ -49,7 +55,7 @@
             </form>
     {% endif %}
 {% endblock %}
-{% endif %}
+
 
 
 

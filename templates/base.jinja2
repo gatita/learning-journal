@@ -19,14 +19,7 @@
             <h1>Learning Journal</h1>
           </a>
           <aside id="user-controls">
-            {% if not request.authenticated_userid %}
-            <a href="{{ request.route_url('login') }}" id="login">Log in</a>
-            {% else %}
-            <!-- change url here to create once view is finished -->
-            <a href="{{ request.route_url('create') }}" class="create-edit" id="add-new">
-            Add new entry</a>
-            <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
-            {% endif %}
+            {% block controls %}{% endblock %}
           </aside>
         </nav>
       </header>
