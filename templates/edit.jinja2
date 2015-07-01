@@ -1,0 +1,56 @@
+{% extends "base.jinja2" %}
+
+{% block header %}
+    {% if request.authenticated_userid %}
+        <header id="reduced-header">
+    {% else %}
+        <header>
+    {% endif %}
+{% endblock %}
+
+{% block controls %}
+    {% if not request.authenticated_userid %}
+        <a href="{{ request.route_url('login') }}" id="login">Log in</a>
+    {% else %}
+        <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
+    {% endif %}  
+{% endblock %}
+
+{% block body %}
+    {% if request.authenticated_userid %}
+        <section id="entry-form">
+            <h2>Edit Entry</h2>
+            <form action="{{ request.route_url('save_edit') }}" method="POST" class="save_entry">
+                <div class="field">
+                    <label for="title"><h4>Title</h4></label>
+                        <input type="text" name="title" id="title-label" value="{{ entry.title }}"/>
+                </div>
+                <div class="field">
+                    <label id="body-label" for="post-text"><h3>Body</h3></label>
+                    <textarea name="text" id="text" rows="17">{{ entry.text }}</textarea>
+                </div>
+                <div class="control_row">
+                    <input id="submit-button" type="submit" value="Share" name="submit"/>
+                </div>
+            </form>
+    {% else %}
+        <section id="entries">
+            <h2 id="login-header">Login</h2>
+                {% if error -%}
+                    <p class="error"><strong>Error</strong>strong>: {{ error }}</p>
+                {%- endif  %}
+            <form action=" {{ request.route_url('login') }} " method="POST">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username"/>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password"/>
+                </div>
+                <div class="control_row">
+                    <input type="submit" name="Login" value="Login"/>
+                </div>
+            </form>
+    {% endif %}
+{% endblock %}

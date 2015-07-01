@@ -98,6 +98,15 @@ def add_entry(request):
     return HTTPFound(request.route_url('home'))
 
 
+@view_config(route_name='save_edit', request_method='POST')
+def save_edit(request):
+    # title = request.params.get('title')
+    # text = request.params.get('text')
+    # Entry.write(title=title, text=text)
+    # return HTTPFound(request.route_url('home'))
+    pass
+
+
 @view_config(context=DBAPIError)
 def db_exception(context, request):
     from pyramid.response import Response
@@ -144,10 +153,10 @@ def entry(request):
     return {'entry': entry}
 
 
-# @view_config(route_name='other', renderer='string')
-# def other(request):
-#     # import pdb; pdb.set_trace()
-#     return request.matchdict
+# add edit rendered
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
+    return entry(request)
 
 
 def main():
@@ -185,6 +194,8 @@ def main():
     config.add_route('logout', '/logout')
     config.add_route('create', '/create')
     config.add_route('entry', '/entry/{id}')
+    config.add_route('edit', '/edit/{id}')
+    config.add_route('save_edit', '/save_edit')
     # config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()

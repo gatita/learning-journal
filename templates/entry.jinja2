@@ -8,7 +8,7 @@
     {% if not request.authenticated_userid %}
         <a href="{{ request.route_url('login') }}" id="login">Log in</a>
     {% else %}
-        <a href="{{ request.route_url('create') }}" class="create-edit" id="edit">Edit entry</a>
+        <a href="{{ request.route_url('edit', id=entry.id) }}" class="create-edit" id="edit">Edit entry</a>
         <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
     {% endif %}  
 {% endblock %}
