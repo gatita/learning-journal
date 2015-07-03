@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import datetime
 import os
+import markdown
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
@@ -72,7 +73,6 @@ class Entry(Base):
         entry = cls.by_id(pk, session)
         entry.title = title
         entry.text = text
-        # session.commit(entry)
 
 
 def init_db():
@@ -159,13 +159,16 @@ def create(request):
 def entry(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
+    entry.text = markdown.markdown(entry.text)
     return {'entry': entry}
 
 
 # add edit rendered
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit(request):
-    return entry(request)
+    pk = request.matchdict['id']
+    entry = Entry.by_id(pk)
+    return {'entry': entry}
 
 
 def main():
