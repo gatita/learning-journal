@@ -16,6 +16,8 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import remember, forget
 
+from jinja2 import Markup
+
 
 from waitress import serve
 
@@ -159,8 +161,8 @@ def create(request):
 def entry(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
-    entry.text = markdown.markdown(entry.text)
-    return {'entry': entry}
+    md = markdown.markdown((entry.text))
+    return {'entry': entry, 'md': md}
 
 
 # add edit rendered
