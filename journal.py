@@ -161,7 +161,9 @@ def create(request):
 def entry(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
-    md = markdown.markdown((entry.text))
+    md = markdown.markdown(
+        (entry.text), extensions=['codehilite', 'fenced_code']
+    )
     return {'entry': entry, 'md': md}
 
 
