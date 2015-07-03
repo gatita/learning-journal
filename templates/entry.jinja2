@@ -18,6 +18,6 @@
     <article>
         <p id="date">{{ entry.created.strftime('%b. %d, %Y') }}</p>
         <h2 id="entry-title">{{ entry.title }}</h2>
-        <p>{{ entry.text }}</p>
+        {{ entry.text|safe }}
     </article>
 {% endblock %}
