@@ -74,3 +74,32 @@ def check_entry_view(entry_page):
     article_tag = html.article
     text_tag = article_tag.contents[5]
     assert 'Entry Text 2' in text_tag.children
+
+
+@scenario(
+    'features/edit.feature',
+    'The Edit page redirects to login for anonymous users'
+)
+def test_edit_page_as_anon():
+    pass
+
+
+@when('the user visits the edit page for an entry')
+def view_edit_page_anon(edit_page):
+    pass
+
+
+@then('they do not see the edit form')
+def check_edit_page_form_anon(edit_page):
+    html = edit_page.html
+    edit_form = html.find('section', id='entry-form')
+    assert edit_form is None
+
+
+@then('they see the login form')
+def check_edit_page_anon(edit_page):
+    html = edit_page.html
+    form = html.form
+    form_input = form.find_all('input')
+    assert form_input[0]['id'] == 'username'
+    assert form_input[1]['id'] == 'password'
