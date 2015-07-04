@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from pytest_bdd import scenario, given, when, then
 from pyramid import testing
 import journal
+from test_journal import login_helper
 
 
 @scenario(
@@ -85,7 +86,7 @@ def test_edit_page_as_anon():
 
 
 @when('the user visits the edit page for an entry')
-def view_edit_page_anon(edit_page):
+def view_edit_page(edit_page):
     pass
 
 
@@ -103,3 +104,25 @@ def check_edit_page_anon(edit_page):
     form_input = form.find_all('input')
     assert form_input[0]['id'] == 'username'
     assert form_input[1]['id'] == 'password'
+
+
+@scenario(
+    'features/edit.feature',
+    'The Edit page shows an update form to author users'
+)
+def test_edit_page_as_author():
+    pass
+
+
+@given('an author user')
+def an_author_user(app):
+    response = login_helper('admin', 'secret', app)
+    redirect = response.follow()
+    return redirect
+
+
+@then('they see the edit form')
+def check_edit_page_author(edit_page):
+    html = edit_page.html
+    edit_form = html.find('section', id='entry-form')
+    assert edit_form
