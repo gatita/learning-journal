@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from pytest_bdd import scenario, given, when, then
+from pyramid import testing
 import journal
 
 
@@ -47,21 +48,29 @@ def check_entry_list(homepage):
     'The Detail page shows a complete entry to anonymous users'
 )
 def test_detail_page_as_anon():
+    """ Tests that GIVEN an anonymous user, and GIVEN a list of
+    three entries, WHEN the user visits the homepage, and WHEN
+    the user clicks on an entry's permalink, THEN they seee a
+    detailed view of the entry.
+    """
     pass
 
 
 # given an anonymous user, defined above, AND
-@given('a permalink for an entry')
-def generate_permalink_from_anchor():
-    pass
+# a list of three entries
+# WHEN the user visits the homepage
 
 
-@when('the user visits the permalink')
-def create_entries_with_permalinks():
+@when("the user clicks on an entry's permalink")
+def go_to_entry_page(entry_page):
     pass
 
 
 @then('they see a detailed view of the entry')
-def check_detail_view():
-    pass
-
+def check_entry_view(entry_page):
+    html = entry_page.html
+    title = html.find('h2', id='entry-title')
+    assert 'Title 2' in title
+    article_tag = html.article
+    text_tag = article_tag.contents[5]
+    assert 'Entry Text 2' in text_tag.children
