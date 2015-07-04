@@ -55,3 +55,9 @@ def app(db_session):
 def homepage(app):
     response = app.get('/')
     return response
+
+
+@pytest.fixture()
+def entry_page(homepage):
+    redirect = homepage.click(description='Read', index=0)
+    return redirect
