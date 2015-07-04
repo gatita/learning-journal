@@ -211,8 +211,7 @@ def test_do_login_missing_params(auth_req):
             do_login(auth_req)
 
 
-INPUT_BTN = '<input id="submit-button" type="submit" \
-            value="Share" name="submit"/>'
+BTN = '<input id="submit-button" type="submit" value="Share" name="submit"/>'
 
 
 def login_helper(username, password, app):
@@ -227,7 +226,7 @@ def login_helper(username, password, app):
 def test_start_as_anonymous(app):
     response = app.get('/', status=200)
     actual = response.body
-    assert INPUT_BTN not in actual
+    assert BTN not in actual
 
 
 def test_login_success(app):
@@ -282,7 +281,7 @@ def test_add_returned_after_authenticated_create_request(app):
     redirect = login_helper(username, password, app)
     assert redirect.status_code == 302
     response = app.get('/create', status=200)
-    assert INPUT_BTN in response
+    assert BTN in response
 
 
 def test_add_new_entry_btn_after_login(app):
@@ -291,7 +290,7 @@ def test_add_new_entry_btn_after_login(app):
     assert redirect.status_code == 302
     response = redirect.follow()
     redirect = response.click(linkid='add-new')
-    assert INPUT_BTN in redirect
+    assert BTN in redirect
 
 
 # add test to test by_id control
