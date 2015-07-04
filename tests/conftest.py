@@ -1,14 +1,16 @@
 import os
 import pytest
 from pytest_bdd import given
-import journal
 from sqlalchemy import create_engine
+
+import journal
 
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
     'postgresql://gracehatamyar@localhost:5432/test-learning-journal'
     )
+os.environ['DATABASE_URL'] = TEST_DATABASE_URL
 
 
 @pytest.fixture(scope='session')
@@ -47,3 +49,9 @@ def app(db_session):
     from webtest import TestApp
     app = main()
     return TestApp(app)
+
+
+@pytest.fixture()
+def homepage(app):
+    response = app.get('/')
+    return response
