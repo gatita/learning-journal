@@ -13,11 +13,12 @@ def test_home_listing_as_anon():
 
 
 @given('an anonymous user')
-def an_anonymouse_user(app):
-    return app
+def an_anonymous_user(app):
+    pass
 
 
 @given('a list of three entries')
+# this depends on db_session bc we want to mutate the session
 def create_entries(db_session):
     title_template = "Title {}"
     text_template = "Entry Text {}"
@@ -37,12 +38,12 @@ def go_to_homepage(homepage):
 @then('they see a list of 3 entries')
 def check_entry_list(homepage):
     html = homepage.html
-    entries = html.find_all('article', class_=entry)
+    entries = html.find_all('article', class_='post-listing')
     assert len(entries) == 3
 
 
 @scenario(
-    'detail.feature',
+    'features/detail.feature',
     'The Detail page shows a complete entry to anonymous users'
 )
 def test_detail_page_as_anon():
