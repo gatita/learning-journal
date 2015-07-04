@@ -61,3 +61,9 @@ def homepage(app):
 def entry_page(homepage):
     redirect = homepage.click(description='Read', index=0)
     return redirect
+
+
+@pytest.fixture()
+def edit_page(app):
+    response = app.get('/edit/0')
+    return response
