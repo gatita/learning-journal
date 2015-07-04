@@ -4,6 +4,7 @@ Feature: Detail Page
 
 Scenario: The Detail page shows a complete entry to anonymous users
     Given an anonymous user
-    And a permalink for an entry
-    When the user visits the permalink
+    And a list of three entries
+    When the user visits the homepage
+    When the user clicks on an entry's permalink
     Then they see a detailed view of the entry
