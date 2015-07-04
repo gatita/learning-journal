@@ -17,44 +17,6 @@ os.environ['TESTING'] = "True"
 import journal
 
 
-@pytest.fixture(scope='session')
-def connection(request):
-    engine = create_engine(TEST_DATABASE_URL)
-    journal.Base.metadata.create_all(engine)
-    # create connection to our database
-    # this opens a transaction that last for the scope
-    # of the entire session
-    connection = engine.connect()
-    journal.DBSession.registry.clear()
-    # bind this in the name space  of journal
-    journal.DBSession.configure(bind=connection)
-    journal.Base.metadata.bind = engine
-    request.addfinalizer(journal.Base.metadata.drop_all)
-    return connection
-
-
-@pytest.fixture()
-def db_session(request, connection):
-    # starts a new transaction inside the already open transaction
-    from transaction import abort
-    trans = connection.begin()
-    # every test has a transaction that's open for the duration
-    # of the test, and rollsback when the test is completed
-    request.addfinalizer(trans.rollback)
-    request.addfinalizer(abort)
-
-    from journal import DBSession
-    return DBSession
-
-
-@pytest.fixture()
-def app(db_session):
-    from journal import main
-    from webtest import TestApp
-    app = main()
-    return TestApp(app)
-
-
 @pytest.fixture()
 def entry(db_session):
     entry = journal.Entry.write(
@@ -145,7 +107,7 @@ def test_read_entries_one(db_session):
             text=text_template.format(x),
             session=db_session)
         db_session.flush()
-    entries = journal.Entry.all()
+    entries = journal.Entry.all(session=db_session)
     assert len(entries) == 3
     assert entries[0].title > entries[1].title > entries[2].title
     for entry in entries:
