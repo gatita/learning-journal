@@ -4,6 +4,7 @@ from pytest_bdd import given
 from sqlalchemy import create_engine
 
 import journal
+from test_journal import login_helper
 
 
 TEST_DATABASE_URL = os.environ.get(
@@ -67,3 +68,17 @@ def entry_page(homepage):
 def edit_page(app):
     response = app.get('/edit/0')
     return response
+
+
+# @pytest.fixture()
+# def author(app):
+#     username, password = ('admin', 'secret')
+#     login_helper(username, password, app)
+#     response = app.get('/')
+#     return response
+
+
+# @pytest.fixture()
+# def edit_page_author(author):
+#     response = app.get('/edit/0')
+#     return response
