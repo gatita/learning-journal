@@ -258,6 +258,3 @@ def test_add_new_entry_btn_after_login(app):
 # add test to test by_id control
 def test_by_id(app):
     pass
-
-
-# add tests to test entry view

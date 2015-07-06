@@ -20,7 +20,6 @@ def an_anonymous_user(app):
 
 
 @given('a list of three entries')
-# this depends on db_session bc we want to mutate the session
 def create_entries(db_session):
     title_template = "Title {}"
     text_template = "Entry Text {}"
