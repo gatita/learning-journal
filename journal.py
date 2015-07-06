@@ -3,33 +3,28 @@ from __future__ import unicode_literals
 import datetime
 import os
 import markdown
-
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.exc import DBAPIError
-
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import remember, forget
-
-from jinja2 import Markup
-
-
 from waitress import serve
-
 from zope.sqlalchemy import ZopeTransactionExtension
-
 from cryptacular.bcrypt import BCRYPTPasswordManager
+
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 DBSession = scoped_session(sessionmaker(
-    extension=ZopeTransactionExtension()))
+    extension=ZopeTransactionExtension())
+)
+
 DATABASE_URL = os.environ.get(
     'DATABASE_URL',
     'postgresql://gracehatamyar@localhost:5432/learning-journal'
@@ -45,7 +40,7 @@ class Entry(Base):
     text = sa.Column(sa.UnicodeText, nullable=False)
     created = sa.Column(
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
-        )
+    )
 
     @classmethod
     def write(cls, title=None, text=None, session=None):
@@ -212,7 +207,6 @@ def main():
     config.add_route('edit', '/edit/{id}')
     config.add_route('entry', '/entry/{id}')
     config.add_route('update', '/update/{id}')
-    # config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()
     return app
