@@ -96,14 +96,6 @@ def list_view(request):
     return {'entries': entries}
 
 
-@view_config(route_name='add', request_method='POST')
-def add_entry(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.write(title=title, text=text)
-    return HTTPFound(request.route_url('home'))
-
-
 @view_config(route_name='update', request_method='POST')
 def update(request):
     pk = request.matchdict['id']
@@ -149,6 +141,11 @@ def logout(request):
 
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        Entry.write(title=title, text=text)
+        return HTTPFound(request.route_url('home'))
     return {}
 
 
@@ -200,7 +197,6 @@ def main():
     config.include('pyramid_jinja2')
     config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
-    config.add_route('add', '/add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('create', '/create')
