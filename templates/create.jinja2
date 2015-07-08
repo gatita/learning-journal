@@ -21,7 +21,7 @@
     {% if request.authenticated_userid %}
         <section id="entry-form">
             <h2>New Entry</h2>
-            <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
+            <form action="{{ request.route_url('create') }}" method="POST" class="add_entry">
                 <div class="field">
                     <label for="title"><h4>Title</h4></label>
                     <input type="text" name="title" id="title-label"/>
