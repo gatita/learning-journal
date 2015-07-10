@@ -18,6 +18,8 @@ body {
 }
 
 
+
+
 /* Heading -------------------- */
 
 header {
@@ -99,7 +101,6 @@ nav a {
 }
 
 
-
 /* Footer -------------------- */
 
 footer {
@@ -150,6 +151,12 @@ label h3 {
 
 /* PAGE: Create & Edit -------------------- */
 
+/*#create-form {
+    float: right;
+    width: 55%;
+    margin: 3% 5% 10%;
+}
+*/
 
 #reduced-header {
     width: 35%;
