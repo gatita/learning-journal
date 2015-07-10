@@ -220,7 +220,7 @@ textarea:focus {
     border-color: #96775B;
 }
 
-#submit-button {
+#submit-button, #create-button {
     float: right;
     margin-top: 5%;
     border-radius: 2px;
@@ -279,7 +279,7 @@ textarea {
         width: 100%;
     }
 
-    #entry-form {
+    #entry-form, #create-form {
         width: 90%;
     }
 }

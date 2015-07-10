@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import datetime
+import json
 import os
 import markdown
 import sqlalchemy as sa
@@ -139,6 +140,7 @@ def logout(request):
     return HTTPFound(request.route_url('home'), headers=headers)
 
 
+# @view_config(route_name='create', xhr=True, renderer='json')
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
     if not request.authenticated_userid:
