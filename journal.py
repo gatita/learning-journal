@@ -141,6 +141,8 @@ def logout(request):
 
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
+    if not request.authenticated_userid:
+        return HTTPFound(request.route_url('login'))
     if request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
