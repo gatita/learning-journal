@@ -11,6 +11,7 @@ $(function() {
 
     $('.add_entry').submit(function(e) {
         e.preventDefault();
+
         var data = $('.add_entry').serialize();
 
         $.ajax({
@@ -18,7 +19,13 @@ $(function() {
             url: "/create",
             data: data
         }).done(function(response) {
-            console.log('did this work?')
+            $('.hidden-on-start').hide();
+            $('header').css('width', '45%');
+            $('#entries').prepend(
+                '<article class="post-listing" id=' + 
+                response['id'] + '><p>' + response['created'] + 
+                '</p><h2>' + response['title'] + '</h2>' +
+                '<a href="entry/' + response['id'] + '">Read</a>').show();
         })
     })
 });
