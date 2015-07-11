@@ -112,8 +112,11 @@ def list_view(request):
     return {'entries': entries}
 
 
+@view_config(route_name='edit', xhr=True, renderer='json')
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit(request):
+    if not request.authenticated_userid:
+        raise HTTPForbidden()
     pk = request.matchdict['id']
     if request.method == 'POST':
         title = request.params.get('title')
