@@ -66,7 +66,6 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
 
-    # new method to query Entry for a particular entry
     @classmethod
     def by_id(cls, pk, session=None):
         if session is None:
@@ -113,13 +112,16 @@ def list_view(request):
     return {'entries': entries}
 
 
-@view_config(route_name='update', request_method='POST')
-def update(request):
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
     pk = request.matchdict['id']
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.update(pk, title, text)
-    return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        Entry.update(pk, title, text)
+        return HTTPFound(request.route_url('home'))
+    entry = Entry.by_id(pk)
+    return {'entry': entry}
 
 
 @view_config(context=DBAPIError)
@@ -158,7 +160,6 @@ def logout(request):
 @view_config(route_name='create', xhr=True, renderer='json')
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
-    # change to error forbidden
     if not request.authenticated_userid:
         raise HTTPForbidden()
     if request.method == 'POST':
@@ -175,14 +176,6 @@ def create(request):
 
 @view_config(route_name='entry', renderer='templates/entry.jinja2')
 def entry(request):
-    pk = request.matchdict['id']
-    entry = Entry.by_id(pk)
-    return {'entry': entry}
-
-
-# add edit rendered
-@view_config(route_name='edit', renderer='templates/edit.jinja2')
-def edit(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
     return {'entry': entry}
@@ -224,7 +217,6 @@ def main():
     config.add_route('create', '/create')
     config.add_route('edit', '/edit/{id}')
     config.add_route('entry', '/entry/{id}')
-    config.add_route('update', '/update/{id}')
     config.scan()
     app = config.make_wsgi_app()
     return app
