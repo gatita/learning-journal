@@ -11,7 +11,7 @@ from sqlalchemy.exc import DBAPIError
 from pyramid.config import Configurator
 from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import remember, forget
@@ -84,7 +84,7 @@ class Entry(Base):
     @property
     def markdown(self):
         return markdown.markdown(
-            self.text, 
+            self.text,
             extensions=['codehilite', 'fenced_code']
         )
 
@@ -160,7 +160,7 @@ def logout(request):
 def create(request):
     # change to error forbidden
     if not request.authenticated_userid:
-        return HTTPFound(request.route_url('login'))
+        raise HTTPForbidden()
     if request.method == 'POST':
         session = DBSession
         title = request.params.get('title')
