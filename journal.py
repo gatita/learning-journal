@@ -48,9 +48,7 @@ class Entry(Base):
         return dict(
             id=self.id,
             title=self.title,
-            text=markdown.markdown(
-                (self.text), extensions=['codehilite', 'fenced_code']
-                ),
+            text=self.text,
             created=self.created.strftime('%b. %d, %Y'),
             )
 
@@ -82,6 +80,13 @@ class Entry(Base):
         entry = cls.by_id(pk, session)
         entry.title = title
         entry.text = text
+
+    @property
+    def markdown(self):
+        return markdown.markdown(
+            self.text, 
+            extensions=['codehilite', 'fenced_code']
+        )
 
 
 def init_db():
@@ -172,10 +177,7 @@ def create(request):
 def entry(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
-    md = markdown.markdown(
-        (entry.text), extensions=['codehilite', 'fenced_code']
-    )
-    return {'entry': entry, 'md': md}
+    return {'entry': entry}
 
 
 # add edit rendered
