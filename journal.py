@@ -44,6 +44,16 @@ class Entry(Base):
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
 
+    def __json__(self, request):
+        return dict(
+            id=self.id,
+            title=self.title,
+            text=markdown.markdown(
+                (self.text), extensions=['codehilite', 'fenced_code']
+                ),
+            created=self.created.strftime('%b. %d, %Y'),
+            )
+
     @classmethod
     def write(cls, title=None, text=None, session=None):
         if session is None:
@@ -109,7 +119,6 @@ def update(request):
 
 @view_config(context=DBAPIError)
 def db_exception(context, request):
-    from pyramid.response import Response
     response = Response(context.message)
     response.status_int = 500
     return response
@@ -141,8 +150,10 @@ def logout(request):
     return HTTPFound(request.route_url('home'), headers=headers)
 
 
+@view_config(route_name='create', xhr=True, renderer='json')
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
+    # change to error forbidden
     if not request.authenticated_userid:
         return HTTPFound(request.route_url('login'))
     if request.method == 'POST':
@@ -152,12 +163,7 @@ def create(request):
         entry = Entry.write(title=title, text=text)
         session.flush()
         if 'HTTP_X_REQUESTED_WITH' in request.environ:
-            return Response(body=json.dumps({
-                'title': title,
-                'text': markdown.markdown((text), extensions=['codehilite', 'fenced_code']),
-                'id': entry.id,
-                'created': entry.created.strftime('%b. %d, %Y')
-                }), content_type=b'application/json')
+            return entry
         return HTTPFound(request.route_url('home'))
     return {}
 
