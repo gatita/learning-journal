@@ -17,6 +17,10 @@ body {
     position: relative;
 }
 
+.hidden-on-start {
+    display: none;
+}
+
 
 
 

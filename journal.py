@@ -79,6 +79,7 @@ class Entry(Base):
         entry = cls.by_id(pk, session)
         entry.title = title
         entry.text = text
+        return entry
 
     @property
     def markdown(self):
@@ -121,8 +122,10 @@ def edit(request):
     if request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
-        Entry.update(pk, title, text)
-        return HTTPFound(request.route_url('home'))
+        entry = Entry.update(pk, title, text)
+        if 'HTTP_X_REQUESTED_WITH' in request.environ:
+            return entry
+        return HTTPFound(request.route_url('entry', id=pk))
     entry = Entry.by_id(pk)
     return {'entry': entry}
 
