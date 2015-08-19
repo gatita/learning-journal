@@ -15,8 +15,12 @@
 
 {% block body %}
 <section id="entries">
-    <article>
+    <article> 
         <p id="date">{{ entry.created.strftime('%b. %d, %Y') }}</p>
+        <a class="twitter-share-button" href="https://twitter.com/intent/tweet"
+           data-text='{{ entry.title }}' data-count="none">
+            Tweet
+        </a>
         <h2 id="entry-title">{{ entry.title }}</h2>
         <div id="entry-body">
         {{ entry.markdown|safe }}
