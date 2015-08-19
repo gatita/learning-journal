@@ -131,11 +131,12 @@ def test_listing(app, entry):
 
 
 def test_post_to_add_view(app):
+    login_helper('admin', 'secret', app)
     entry_data = {
         'title': 'Hello there',
         'text': 'This is post',
     }
-    response = app.post('/create', params=entry_data, status='3*')
+    response = app.post('/create', params=entry_data)
     redirected = response.follow()
     actual = redirected.body
     assert entry_data['title'] in actual
@@ -143,8 +144,8 @@ def test_post_to_add_view(app):
 
 
 def test_add_no_params(app):
-    response = app.post('/create', status=500)
-    assert 'IntegrityError' in response.body
+    response = app.post('/create', status=403)
+    assert response.status_code == 403
 
 
 def test_do_login_success(auth_req):
@@ -185,12 +186,6 @@ def login_helper(username, password, app):
     return app.post('/login', params=login_data, status='*')
 
 
-def test_start_as_anonymous(app):
-    response = app.get('/', status=200)
-    actual = response.body
-    assert BTN not in actual
-
-
 def test_login_success(app):
     username, password = ('admin', 'secret')
     redirect = login_helper(username, password, app)
@@ -227,15 +222,8 @@ def test_logout(app):
     assert "Add new entry" not in actual
 
 
-def test_login_returned_by_anonymous_create_request(app):
-    response = app.get('/create', status=200)
-    # check that new entry form not in response
-    assert "entry-form" not in response
-    # check that login form is in response
-    assert "login-header" in response
-    form = response.form
-    for field in ['username', 'password']:
-        assert field in form.fields
+def test_forbidden_anonymous_create_request(app):
+    response = app.get('/create', status=403)
 
 
 def test_add_returned_after_authenticated_create_request(app):

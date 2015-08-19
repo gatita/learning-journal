@@ -2,12 +2,11 @@ Feature: Edit Page
     A prepopulated form for an entry where its contents can be edited
 
 
-Scenario: The Edit page redirects to login for anonymous users
+Scenario: The Edit page is forbidden for anonymous users
     Given an anonymous user
     And a list of three entries
     When the user visits the edit page for an entry
-    Then they do not see the edit form
-    Then they see the login form
+    Then a 403 Forbidden is raised
 
 
 Scenario: The Edit page shows an update form to author users

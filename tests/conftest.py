@@ -66,7 +66,7 @@ def entry_page(homepage):
 
 @pytest.fixture()
 def edit_page(app):
-    response = app.get('/edit/0')
+    response = app.get('/edit/0', status=403)
     return response
 
 
