@@ -43,9 +43,7 @@ $(function() {
             $('.hidden-on-start').css('display', 'none');
             $('header').css('width', '45%');
             $('#entry-title').html(response.title)
-            $('#entry-body').html(response.text.markdown)
-            // $('#title-label').val(response['title']);
-            // $('#text').val(response['text']);
+            $('#entry-body').html(response.text)
             $('#entries').show()
         })
     })

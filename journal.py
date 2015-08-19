@@ -124,7 +124,8 @@ def edit(request):
         text = request.params.get('text')
         entry = Entry.update(pk, title, text)
         if 'HTTP_X_REQUESTED_WITH' in request.environ:
-            return entry
+            updated_entry = {'title': entry.title, 'text': entry.markdown}
+            return updated_entry
         return HTTPFound(request.route_url('entry', id=pk))
     entry = Entry.by_id(pk)
     return {'entry': entry}
