@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import datetime
+import json
 import os
 import markdown
 import sqlalchemy as sa
@@ -8,8 +9,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.exc import DBAPIError
 from pyramid.config import Configurator
+from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import remember, forget
@@ -42,6 +44,14 @@ class Entry(Base):
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
 
+    def __json__(self, request):
+        return dict(
+            id=self.id,
+            title=self.title,
+            text=self.text,
+            created=self.created.strftime('%b. %d, %Y'),
+            )
+
     @classmethod
     def write(cls, title=None, text=None, session=None):
         if session is None:
@@ -56,7 +66,6 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
 
-    # new method to query Entry for a particular entry
     @classmethod
     def by_id(cls, pk, session=None):
         if session is None:
@@ -70,6 +79,14 @@ class Entry(Base):
         entry = cls.by_id(pk, session)
         entry.title = title
         entry.text = text
+        return entry
+
+    @property
+    def markdown(self):
+        return markdown.markdown(
+            self.text,
+            extensions=['codehilite', 'fenced_code']
+        )
 
 
 def init_db():
@@ -96,18 +113,26 @@ def list_view(request):
     return {'entries': entries}
 
 
-@view_config(route_name='update', request_method='POST')
-def update(request):
+@view_config(route_name='edit', xhr=True, renderer='json')
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
+    if not request.authenticated_userid:
+        raise HTTPForbidden()
     pk = request.matchdict['id']
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.update(pk, title, text)
-    return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        entry = Entry.update(pk, title, text)
+        if 'HTTP_X_REQUESTED_WITH' in request.environ:
+            updated_entry = {'title': entry.title, 'text': entry.markdown}
+            return updated_entry
+        return HTTPFound(request.route_url('entry', id=pk))
+    entry = Entry.by_id(pk)
+    return {'entry': entry}
 
 
 @view_config(context=DBAPIError)
 def db_exception(context, request):
-    from pyramid.response import Response
     response = Response(context.message)
     response.status_int = 500
     return response
@@ -139,29 +164,25 @@ def logout(request):
     return HTTPFound(request.route_url('home'), headers=headers)
 
 
+@view_config(route_name='create', xhr=True, renderer='json')
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create(request):
+    if not request.authenticated_userid:
+        raise HTTPForbidden()
     if request.method == 'POST':
+        session = DBSession
         title = request.params.get('title')
         text = request.params.get('text')
-        Entry.write(title=title, text=text)
+        entry = Entry.write(title=title, text=text)
+        session.flush()
+        if 'HTTP_X_REQUESTED_WITH' in request.environ:
+            return entry
         return HTTPFound(request.route_url('home'))
     return {}
 
 
 @view_config(route_name='entry', renderer='templates/entry.jinja2')
 def entry(request):
-    pk = request.matchdict['id']
-    entry = Entry.by_id(pk)
-    md = markdown.markdown(
-        (entry.text), extensions=['codehilite', 'fenced_code']
-    )
-    return {'entry': entry, 'md': md}
-
-
-# add edit rendered
-@view_config(route_name='edit', renderer='templates/edit.jinja2')
-def edit(request):
     pk = request.matchdict['id']
     entry = Entry.by_id(pk)
     return {'entry': entry}
@@ -203,7 +224,6 @@ def main():
     config.add_route('create', '/create')
     config.add_route('edit', '/edit/{id}')
     config.add_route('entry', '/entry/{id}')
-    config.add_route('update', '/update/{id}')
     config.scan()
     app = config.make_wsgi_app()
     return app
