@@ -81,6 +81,13 @@ class Entry(Base):
         entry.text = text
         return entry
 
+    @classmethod
+    def delete(cls, pk, session=None):
+        if session is None:
+            session = DBSession
+        entry = cls.by_id(pk, session)
+        session.delete(entry)
+
     @property
     def markdown(self):
         return markdown.markdown(
@@ -129,6 +136,13 @@ def edit(request):
         return HTTPFound(request.route_url('entry', id=pk))
     entry = Entry.by_id(pk)
     return {'entry': entry}
+
+
+@view_config(route_name='delete')
+def delete(request):
+    pk = request.matchdict['id']
+    Entry.delete(pk)
+    return HTTPFound(request.route_url('home'))
 
 
 @view_config(context=DBAPIError)
@@ -223,6 +237,7 @@ def main():
     config.add_route('logout', '/logout')
     config.add_route('create', '/create')
     config.add_route('edit', '/edit/{id}')
+    config.add_route('delete', '/delete/{id}')
     config.add_route('entry', '/entry/{id}')
     config.scan()
     app = config.make_wsgi_app()
