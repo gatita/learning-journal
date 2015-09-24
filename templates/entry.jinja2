@@ -9,6 +9,7 @@
         <a href="{{ request.route_url('login') }}" id="login">Log in</a>
     {% else %}
         <a href="{{ request.route_url('edit', id=entry.id) }}" class="create-edit" id="add-new">Edit entry</a>
+        <a href="{{ request.route_url('delete', id=entry.id) }}" class="create-edit" id="add-new">Delete entry</a>
         <a href="{{ request.route_url('logout') }}" class="create-edit">Log out</a>
     {% endif %}  
 {% endblock %}
